@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.http import JsonResponse
 from django.urls import path, include
+from django.contrib import admin
 
 def home_view(request):
     return JsonResponse({"message": "Welcome to Loan Management API"}, status=200)
@@ -23,5 +24,5 @@ def home_view(request):
 urlpatterns = [
     path('', home_view),  # Root route
     path('admin/', admin.site.urls),
-    path('api/', include('loan_app.urls')),
+    path('api/', include('your_app.urls')),
 ]
