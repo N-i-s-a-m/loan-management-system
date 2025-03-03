@@ -14,12 +14,14 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import path, include
-from .views import guest_page
 
-urlpatterns= [
-    path('', guest_page),
-    path('admin/', admin.site.urls),  
-    path('api/', include('loan_app.urls')),  
+def home_view(request):
+    return JsonResponse({"message": "Welcome to Loan Management API"}, status=200)
+
+urlpatterns = [
+    path('', home_view),  # Root route
+    path('admin/', admin.site.urls),
+    path('api/', include('loan_app.urls')),
 ]
