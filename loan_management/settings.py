@@ -37,7 +37,8 @@ SECRET_KEY = 'django-insecure-r0erp77^8v#!)ykkc_7zqf#+b0%90m=n-)n9y+txkmkf_+b0fs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "loan-management-api-uujj.onrender.com"]
+
 
 
 # Application definition
@@ -58,6 +59,7 @@ AUTH_USER_MODEL = 'loan_app.CustomUser'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,13 +146,6 @@ USE_I18N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-STATIC_URL = '/static/'  # URL for serving static files
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),  # ✅ Points to the static folder
-]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -165,3 +160,16 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'loan.management.project@gmail.com'  
 EMAIL_HOST_PASSWORD = 'bvgsrykdqpdmnliq'  
 
+
+STATIC_URL = '/static/'
+
+# Add this line to define where static files will be collected
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Ensure these are included:
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+
+# If using Whitenoise for deployment, add this:
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

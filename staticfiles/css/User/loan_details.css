@@ -1,0 +1,217 @@
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: #f4f7fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #1565c0;
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h1 span {
+            color: #b71c1c;
+        }
+
+        .loan-sections {
+            display: grid;
+            grid-template-columns: 4fr 2fr;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+
+        .section {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #90caf9;
+        }
+
+        .section h2 {
+            font-size: 24px;
+            color: #1565c0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #90caf9;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .loan-details p {
+            font-size: 16px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .loan-details p strong {
+            color: #333;
+            font-weight: 600;
+        }
+
+        .loan-details p span {
+            color: #1565c0;
+            font-weight: 500;
+        }
+
+        .foreclosure-box {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .foreclosure-box button:disabled {
+            background-color: grey;
+            color: white;
+            cursor: not-allowed;
+        }
+
+        .foreclosure-box button,
+        .back-btn,
+        .pay-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .foreclosure-box button {
+            background-color: #d32f2f;
+            color: #fff;
+        }
+
+        .foreclosure-box button:hover {
+            background-color: #b71c1c;
+            transform: translateY(-2px);
+        }
+
+        .back-btn {
+            background-color: #0288d1;
+            color: #fff;
+            display: block;
+            margin: 20px auto 0;
+            text-align: center;
+        }
+
+        .back-btn:hover {
+            background-color: #0277bd;
+            transform: translateY(-2px);
+        }
+
+        .payment-schedule table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .payment-schedule th,
+        .payment-schedule td {
+            padding: 12px 15px;
+            text-align: center;
+            font-size: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .payment-schedule th {
+            background-color: #1565c0;
+            color: #fff;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .payment-schedule tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .payment-schedule tr:hover {
+            background-color: #e3f2fd;
+        }
+
+        .payment-schedule tr.paid-row {
+            background-color: #e0e0e0 !important;
+        }
+
+        .payment-schedule tr.paid-row:hover {
+            background-color: #e0e0e0 !important;
+        }
+
+        .pay-btn {
+            background-color: #28a745;
+            color: #fff;
+        }
+
+        .pay-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .pay-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .pay-btn {
+            padding: 8px 12px;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+
+        .enabled-pay {
+            background-color: green;
+        }
+
+        .disabled-pay {
+            background-color: gray;
+            cursor: not-allowed;
+        }
+
+        .paid-btn {
+            background-color: red;
+        }
+
+        .paid-row {
+            background-color: #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .loan-sections {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 20px;
+            }
+        }
