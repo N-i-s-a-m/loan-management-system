@@ -1,0 +1,74 @@
+<!-- File: templates/User/loan_list.html -->
+<!-- Description: Loan list page template for EasyLoan, displaying user's loans with navigation to details. -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for character encoding and responsive viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Loans</title>
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/User/loan_list.css' %}">
+</head>
+<body>
+    <!-- Include the header template -->
+    {% include 'User/header.html' %}
+
+    <!-- Main container for loan list -->
+    <div class="container">
+        <h2>My Loan List</h2>
+        <div class="loan-list-container">
+            {% if loans %}
+                <!-- Table displaying loan details -->
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Loan ID</th>
+                            <th>Amount</th>
+                            <th>Tenure (Months)</th>
+                            <th>Interest Rate (%)</th>
+                            <th>Monthly Installment</th>
+                            <th>Total Interest</th>
+                            <th>Total Payable</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in loans %}
+                        <tr>
+                            <td>{{ loan.loan_id }}</td>
+                            <td>₹ {{ loan.amount }}</td>
+                            <td>{{ loan.tenure }}</td>
+                            <td>{{ loan.interest_rate }}</td>
+                            <td>₹ {{ loan.monthly_installment }}</td>
+                            <td>₹ {{ loan.total_interest }}</td>
+                            <td>₹ {{ loan.total_payable }}</td>
+                            <td><span class="status-badge {{ loan.status|lower }}">{{ loan.status }}</span></td>
+                            <td>
+                                <button class="view-details-btn" onclick="viewDetails('{{ loan.loan_id }}')">
+                                    View Details
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <!-- Message for no loans available -->
+                <p class="no-loans-message">No loans found.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- JavaScript for navigating to loan details -->
+    <script>
+        // Redirect to loan details page with loan ID
+        function viewDetails(loanId) {
+            window.location.href = "/loan_details?loan_id=" + encodeURIComponent(loanId);
+        }
+    </script>
+</body>
+</html>

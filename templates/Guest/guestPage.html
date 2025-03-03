@@ -1,0 +1,67 @@
+<!-- File: templates/Guest/guestPage.html -->
+<!-- Description: Guest page template for the EasyLoan application, showcasing loan features and navigation options. -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for character encoding and responsive viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - Loan Application</title>
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/Guest/guest_page.css' %}">
+</head>
+<body>
+    <!-- Header section with title and authentication buttons -->
+    <header>
+        <div class="header-title">
+            <h1>Welcome to EasyLoan</h1>
+        </div>
+        <div class="header-buttons">
+            <a href="{% url 'login_page' %}" class="auth-btn">Login</a>
+            <a href="{% url 'register_page' %}" class="auth-btn">Register</a>
+        </div>
+    </header>
+
+    <!-- Main container for content and sidebar -->
+    <div class="container">
+        <!-- Main content section -->
+        <div class="main-content">
+            <h2>Get Your Loan Today</h2>
+            <p>
+                Welcome to EasyLoan, where we make financing simple and accessible. 
+                Whether you need funds for personal goals, business ventures, or unexpected expenses, 
+                we've got you covered with our hassle-free loan process.
+            </p>
+            
+            <!-- Loan promotional images -->
+            <div class="loan-images">
+                <img src="{% static 'images/Guest/img_4.jpg' %}" alt="Apply_Loan">
+                <img src="{% static 'images/Guest/img_3.jpg' %}" alt="Cash_Recived">
+                <img src="{% static 'images/Guest/img_2.jpg' %}" alt="Build_Home">
+                <img src="{% static 'images/Guest/img_1.jpg' %}" alt="Happy_Customer">
+            </div>
+        </div>
+
+        <!-- Sidebar section -->
+        <div class="sidebar">
+            <!-- Why Choose Us section -->
+            <div style="margin-bottom: 20px;">
+                <h2>Why Choose Us?</h2>
+                <ul>
+                    <li>Quick approval process</li>
+                    <li>Competitive interest rates</li>
+                    <li>Flexible repayment terms</li>
+                    <li>No hidden fees</li>
+                </ul>
+            </div>
+            
+            <!-- Call-to-action section -->
+            <h2>Ready to Start?</h2>
+            <p>Apply for your loan in just a few simple steps.</p>
+            <a href="{% url 'login_page' %}"><button class="apply-btn">Apply for Loan</button></a>
+        </div>
+    </div>
+</body>
+</html>

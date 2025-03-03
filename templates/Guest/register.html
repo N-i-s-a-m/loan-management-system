@@ -1,0 +1,254 @@
+<!-- File: templates/guest/register.html -->
+<!-- Description: Registration page template for EasyLoan with form submission, OTP verification, and API integration. -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for character encoding and responsive viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - EasyLoan</title>
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/guest/login.css' %}">
+    <style>
+        /* Inline CSS for background and form visibility */
+        body {
+            background: url('{% static "images/guest/img_4.jpg" %}') no-repeat center/cover;
+        }
+        .otp-container {
+            display: none; /* Hide OTP form by default */
+        }
+        .spinner {
+            display: none; /* Hide loading spinner by default */
+        }
+    </style>
+</head>
+<body>
+    <!-- Main container for registration and OTP forms -->
+    <div class="login-container">
+        <div class="login-box">
+            <h2 id="form-title">Register with EasyLoan</h2>
+            
+            <!-- Registration Form -->
+            <form id="register-form">
+                <div class="input-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required placeholder="Enter your username">
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="login-btn" id="register-submit">Register</button>
+            </form>
+
+            <!-- OTP Verification Form -->
+            <form id="otp-form" class="otp-container">
+                <div class="input-group">
+                    <label for="otp">Enter OTP</label>
+                    <input type="text" id="otp" name="otp" required placeholder="Enter OTP from email">
+                </div>
+                <button type="submit" class="login-btn" id="otp-submit">Verify OTP</button>
+            </form>
+            
+            <!-- Loading spinner and message display -->
+            <div class="spinner" id="loading-spinner"></div>
+            <p id="register-message" style="padding: 10px 0;"></p>
+            <!-- Link to login page -->
+            <p class="register-link">Have an account? <a href="{% url 'login_page' %}">Login here</a></p>
+        </div>
+    </div>
+
+    <!-- JavaScript for form handling and API integration -->
+    <script>
+        // Validation functions
+        function isValidUsername(username) {
+            // Check if username is 3-20 characters with letters, numbers, or underscores
+            return /^[a-zA-Z0-9_]{3,20}$/.test(username);
+        }
+
+        function isValidEmail(email) {
+            // Basic email format validation
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+        }
+
+        function isValidPassword(password) {
+            // Password must be 8+ characters with at least 1 letter, 1 number, and 1 special character
+            return /^(?=.*[A-Za-z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/.test(password);
+        }
+
+        // Registration form submission handler
+        document.getElementById("register-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            // DOM elements
+            const submitButton = document.getElementById("register-submit");
+            const spinner = document.getElementById("loading-spinner");
+            const messageElement = document.getElementById("register-message");
+            const registerForm = document.getElementById("register-form");
+            const otpForm = document.getElementById("otp-form");
+
+            // Disable button and show spinner
+            submitButton.disabled = true;
+            spinner.style.display = "block";
+            messageElement.textContent = "";
+
+            // Retrieve form values
+            const username = document.getElementById("username").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            // Client-side validation
+            if (!username || !email || !password) {
+                messageElement.textContent = "All fields are required!";
+                messageElement.style.color = "#e74c3c";
+                submitButton.disabled = false;
+                spinner.style.display = "none";
+                return;
+            }
+
+            if (!isValidUsername(username)) {
+                messageElement.textContent = "Username must be 3-20 characters and contain only letters, numbers, or underscores";
+                messageElement.style.color = "#e74c3c";
+                submitButton.disabled = false;
+                spinner.style.display = "none";
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                messageElement.textContent = "Please enter a valid email address";
+                messageElement.style.color = "#e74c3c";
+                submitButton.disabled = false;
+                spinner.style.display = "none";
+                return;
+            }
+
+            if (!isValidPassword(password)) {
+                messageElement.textContent = "Password must be at least 8 characters long with at least 1 number, and 1 special character (!@#$%^&*)";
+                messageElement.style.color = "#e74c3c";
+                submitButton.disabled = false;
+                spinner.style.display = "none";
+                return;
+            }
+
+            const formData = { username, email, password };
+
+            try {
+                // Send registration request to API
+                const response = await fetch("{% url 'register' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                spinner.style.display = "none";
+
+                if (response.ok) {
+                    // Successful registration, switch to OTP form
+                    messageElement.textContent = "Registration successful! Check your email for OTP.";
+                    messageElement.style.color = "#2ecc71";
+                    registerForm.style.display = "none";
+                    otpForm.style.display = "block";
+                    document.getElementById("form-title").textContent = "Verify OTP";
+                } else {
+                    // Handle registration errors
+                    messageElement.style.color = "#e74c3c";
+                    if (response.status === 400) {
+                        if (data.errors?.username) {
+                            messageElement.textContent = "Username already exists.";
+                        } else if (data.errors?.email) {
+                            messageElement.textContent = "Email already registered.";
+                        } else {
+                            messageElement.textContent = "Registration failed: " + (data.message || "Invalid input!");
+                        }
+                    } else {
+                        messageElement.textContent = "Error: " + (data.message || "Something went wrong.");
+                    }
+                    submitButton.disabled = false;
+                }
+            } catch (error) {
+                // Handle network errors
+                console.error("Error:", error);
+                messageElement.textContent = "Network error: Please try again.";
+                messageElement.style.color = "#e74c3c";
+                spinner.style.display = "none";
+                submitButton.disabled = false;
+            }
+        });
+
+        // OTP form submission handler
+        document.getElementById("otp-form").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            // DOM elements
+            const spinner = document.getElementById("loading-spinner");
+            const messageElement = document.getElementById("register-message");
+            const otpSubmit = document.getElementById("otp-submit");
+
+            // Show spinner and disable button
+            spinner.style.display = "block";
+            otpSubmit.disabled = true;
+            messageElement.textContent = "";
+
+            // Retrieve email and OTP values
+            const email = document.getElementById("email").value;
+            const otp = document.getElementById("otp").value.trim();
+
+            if (!otp) {
+                messageElement.textContent = "Please enter the OTP";
+                messageElement.style.color = "#e74c3c";
+                spinner.style.display = "none";
+                otpSubmit.disabled = false;
+                return;
+            }
+
+            const formData = { email, otp };
+
+            try {
+                // Send OTP verification request to API
+                const response = await fetch("{% url 'verify_otp' %}", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": "{{ csrf_token }}"
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+                spinner.style.display = "none";
+
+                if (response.ok) {
+                    // Successful OTP verification
+                    messageElement.textContent = "Email verified successfully!";
+                    messageElement.style.color = "#2ecc71";
+                    setTimeout(() => {
+                        window.location.href = "{% url 'login_page' %}"; // Redirect to login page
+                    }, 1500);
+                } else {
+                    // Handle OTP verification errors
+                    messageElement.textContent = "Error: " + (data.error || "Invalid OTP");
+                    messageElement.style.color = "#e74c3c";
+                    otpSubmit.disabled = false;
+                }
+            } catch (error) {
+                // Handle network errors
+                console.error("Error:", error);
+                messageElement.textContent = "Network error: Please try again.";
+                messageElement.style.color = "#e74c3c";
+                spinner.style.display = "none";
+                otpSubmit.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>

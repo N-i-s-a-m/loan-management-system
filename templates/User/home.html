@@ -1,0 +1,47 @@
+<!-- File: templates/User/home.html -->
+<!-- Description: User home page template for EasyLoan, showcasing key features and including the header. -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for character encoding and responsive viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - EasyLoan</title>
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/User/home.css' %}">
+</head>
+<body>
+    <!-- Include the header template -->
+    {% include 'User/header.html' %}
+
+    <!-- Main container for content -->
+    <div class="container">
+        <!-- Hero section -->
+        <div class="hero">
+            <h1>Welcome to EasyLoan</h1>
+            <p>Your trusted partner for fast, reliable, and hassle-free loans.</p>
+        </div>
+
+        <!-- Features section -->
+        <div class="features">
+            <div class="feature-card">
+                <img src="{% static 'images/User/img_1.jpg' %}" alt="Fast Loans">
+                <h3>Quick Approval</h3>
+                <p>Get your loan approved in minutes with our streamlined process.</p>
+            </div>
+            <div class="feature-card">
+                <img src="{% static 'images/User/img_5.png' %}" alt="Low Rates">
+                <h3>Competitive Rates</h3>
+                <p>Enjoy affordable interest rates tailored to your needs.</p>
+            </div>
+            <div class="feature-card">
+                <img src="{% static 'images/User/img_6.jpg' %}" alt="Support">
+                <h3>24/7 Support</h3>
+                <p>Our team is here to assist you anytime, anywhere.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

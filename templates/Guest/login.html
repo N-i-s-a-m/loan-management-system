@@ -1,0 +1,92 @@
+<!-- File: templates/Guest/login.html -->
+<!-- Description: Login page template for EasyLoan with form submission and API integration. -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for character encoding and responsive viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EasyLoan</title>
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/Guest/login.css' %}">
+    <style>
+        /* Inline CSS for background image */
+        body {
+            background: url('{% static "images/Guest/img_4.jpg" %}') no-repeat center/cover;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login container -->
+    <div class="login-container">
+        <div class="login-box">
+            <h2>Login to EasyLoan</h2>
+            <!-- Login form -->
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                </div>
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+            <!-- Error message display -->
+            <p id="error-message" class="error-message" style="color: red; margin-top: 10px;"></p>
+            <!-- Link to registration page -->
+            <p class="register-link">Don't have an account? <a href="{% url 'register_page' %}">Register here</a></p>
+        </div>
+    </div>
+
+    <!-- JavaScript for form submission and API handling -->
+    <script>
+        document.getElementById("login-form").addEventListener("submit", async function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Retrieve form input values
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const errorMessage = document.getElementById("error-message");
+            errorMessage.innerText = ""; // Clear previous error messages
+
+            try {
+                // Send login request to API
+                const response = await fetch("http://127.0.0.1:8000/api/login/", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Store authentication data
+                    localStorage.setItem("token", data.access_token);  // Store JWT access token
+                    sessionStorage.setItem("user_id", data.user.id);   // Store user ID
+                    sessionStorage.setItem("role", data.user.role);    // Store user role
+
+                    // Redirect based on user role
+                    if (data.user.role === "admin") {
+                        alert("Login Successful! Redirecting to Admin Dashboard...");
+                        window.location.href = "/admin_home";  // Redirect to admin dashboard
+                    } else {
+                        alert("Login Successful! Redirecting to User Dashboard...");
+                        window.location.href = "/user_home";   // Redirect to user dashboard
+                    }
+                } else {
+                    // Display error message from API response
+                    errorMessage.innerText = data.detail || "Invalid credentials. Try again.";
+                }
+            } catch (error) {
+                // Handle network or unexpected errors
+                console.error("Error:", error);
+                errorMessage.innerText = "An error occurred. Please try again later.";
+            }
+        });
+    </script>
+</body>
+</html>

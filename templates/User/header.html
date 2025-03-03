@@ -1,0 +1,119 @@
+<!-- File: templates/User/header.html -->
+<!-- Description: Header template for EasyLoan with navigation and authentication logic for users. -->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Meta tags for character encoding and responsive viewport -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyLoan</title>
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="{% static 'css/User/header.css' %}">
+</head>
+<body>
+    <!-- Header section with logo and navigation -->
+    <header>
+        <div class="logo">
+            <h1>EasyLoan</h1>
+        </div>
+        <div class="nav-buttons">
+            <button onclick="goToHome()">Home</button>
+            <button onclick="goToApply()">Apply Loan</button>
+            <button onclick="goToLoanDetail()">Loan Detail</button>
+            <button onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <!-- JavaScript for navigation and authentication handling -->
+    <script>
+        // Redirect to the Apply Loan page
+        function goToApply() {
+            window.location.href = "/apply_loan_page";
+        }
+
+        // Redirect to the Loan Detail page with user ID
+        function goToLoanDetail() {
+            const userId = sessionStorage.getItem("user_id");
+            if (userId) {
+                window.location.href = `/loan_list?user_id=${userId}`;
+            } else {
+                alert("User not logged in!");
+                window.location.href = "/login"; // Redirect to login if no user ID
+            }
+        }
+
+        // Check authentication and role-based access on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            const token = localStorage.getItem("token");
+            const role = sessionStorage.getItem("role");
+
+            if (!token) {
+                alert("Session expired! Please login again.");
+                window.location.href = "/login";
+                return;
+            }
+
+            // Enforce role-based access control
+            const currentPath = window.location.pathname;
+            if (currentPath.includes("admin_home") && role !== "admin") {
+                alert("Access Denied! Only Admins can access this page.");
+                window.location.href = "/login";
+            } else if (currentPath.includes("user_home") && role !== "user") {
+                alert("Access Denied! Only Users can access this page.");
+                window.location.href = "/login";
+            }
+        });
+
+        // Clear session storage when window is closed
+        window.addEventListener("unload", function () {
+            if (!document.hasFocus()) {  
+                // Clear session if the window is closed (not just refreshed/navigated)
+                sessionStorage.clear();
+            }
+        });
+
+        // Redirect to the User Home page
+        function goToHome() {
+            window.location.href = "/user_home";
+        }
+
+        // Logout function with API call
+        async function logout() {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("You are already logged out!");
+                window.location.href = "/login/";
+                return;
+            }
+
+            try {
+                // Send logout request to API
+                const response = await fetch("http://127.0.0.1:8000/api/logout/", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": token,  // Include token in header
+                        "X-CSRFToken": "{{ csrf_token }}",
+                    },
+                });
+
+                if (response.ok) {
+                    // Clear local and session storage on successful logout
+                    localStorage.removeItem("token");
+                    sessionStorage.removeItem("user_id");
+                    alert("Logout successful!");
+                    window.location.href = "/login";
+                } else {
+                    const errorData = await response.json();
+                    alert("Logout failed! " + (errorData.detail || "Please try again."));
+                }
+            } catch (error) {
+                // Handle network or unexpected errors
+                console.error("Logout error:", error);
+                alert("An error occurred during logout.");
+            }
+        }
+    </script>
+</body>
+</html>
