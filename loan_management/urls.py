@@ -14,12 +14,12 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-
 from django.contrib import admin
 from django.urls import path, include
+from .views import guest_page
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('loan_app.urls')),  # Now accessible without /loan_app/
+urlpatterns= [
+    path('', guest_page),
+    path('admin/', admin.site.urls),  
+    path('api/', include('loan_app.urls')),  
 ]
-
