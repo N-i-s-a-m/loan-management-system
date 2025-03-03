@@ -170,6 +170,7 @@ class VerifyOTPView(APIView):
 
 
 # User login view
+@method_decorator(csrf_exempt, name='dispatch')
 class UserLoginView(APIView):
     def post(self, request):
         email = request.data.get("email")
